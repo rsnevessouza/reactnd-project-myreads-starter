@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import Bookshelf from './Bookshelf'
+import ListBooks from './ListBooks'
 
 class Dashboard extends Component {
     static propTypes = {
@@ -12,9 +12,9 @@ class Dashboard extends Component {
     render() {
         const { books, updateBook } = this.props
         const bookshelfs = [
-                {shelf: 'currentlyReading', title: 'Currently Reading', books}, 
-                {shelf: 'wantToRead', title: 'Want To Read', books}, 
-                {shelf: 'read', title: 'Read', books}
+                {shelf: 'currentlyReading', title: 'Currently Reading'}, 
+                {shelf: 'wantToRead', title: 'Want To Read'}, 
+                {shelf: 'read', title: 'Read'}
             ]
         return (
             <div className="list-books">
@@ -24,13 +24,12 @@ class Dashboard extends Component {
                 <div className="list-books-content">
                     <div>
                         {bookshelfs.map(bookshelf => (
-                            <Bookshelf 
-                                key={ bookshelf.shelf } 
-                                shelf={ bookshelf.shelf } 
-                                title={ bookshelf.title }
-                                books={ bookshelf.books } 
-                                updateBook={ updateBook } 
-                            />
+                            <div className="bookshelf">
+                                <h2 className="bookshelf-title">{bookshelf.title}</h2>
+                                <div className="bookshelf-books">
+                                    <ListBooks books={books.filter(book => book.shelf === bookshelf.shelf)} updateBook={updateBook} />
+                                </div>
+                            </div>
                         ))}
                     </div>
                 </div>
