@@ -12,10 +12,10 @@ class Dashboard extends Component {
     render() {
         const { books, updateBook } = this.props
         const bookshelfs = [
-                {shelf: 'currentlyReading', title: 'Currently Reading'}, 
-                {shelf: 'wantToRead', title: 'Want To Read'}, 
-                {shelf: 'read', title: 'Read'}
-            ]
+            {shelf: 'currentlyReading', title: 'Currently Reading'}, 
+            {shelf: 'wantToRead', title: 'Want To Read'}, 
+            {shelf: 'read', title: 'Read'}
+        ]
         return (
             <div className="list-books">
                 <div className="list-books-title">
