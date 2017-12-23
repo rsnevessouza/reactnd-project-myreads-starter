@@ -4,7 +4,7 @@ const ListBooks = ({ books, updateBook }) => {
     return (
     	<ol className="books-grid">
             {books.map(book => (
-                <li key={ book.id }>
+                <li key={book.id}>
                     <div className="book">
                         <div className="book-top">
                             <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url("${book.imageLinks.thumbnail}")`}}></div>
@@ -19,7 +19,9 @@ const ListBooks = ({ books, updateBook }) => {
                                 </div>
                             </div>
                         <div className="book-title">{book.title}</div>
-                        <div className="book-authors">{book.authors.map((author, index) => (<span key={index}>{author}</span>))}</div>
+                        {books.authors && (
+                            <div className="book-authors">{book.authors.map((author, index) => (<span key={index}>{author}</span>))}</div>
+                        )}
                     </div>
                 </li>
             ))}

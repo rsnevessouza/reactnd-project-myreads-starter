@@ -24,7 +24,7 @@ class Dashboard extends Component {
                 <div className="list-books-content">
                     <div>
                         {bookshelfs.map(bookshelf => (
-                            <div className="bookshelf">
+                            <div key={bookshelf.shelf} className="bookshelf">
                                 <h2 className="bookshelf-title">{bookshelf.title}</h2>
                                 <div className="bookshelf-books">
                                     <ListBooks books={books.filter(book => book.shelf === bookshelf.shelf)} updateBook={updateBook} />
