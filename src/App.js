@@ -17,13 +17,14 @@ class BooksApp extends React.Component {
   }
 
   updateBook = (target, book) => {
-    let { books } = this.state
-    books = books.filter(b => b.id !== book.id).concat({
-      ...book,
-      shelf: target
+    Promise.resolve(BooksAPI.update(book, target)).then(() => {
+      let { books } = this.state
+      books = books.filter(b => b.id !== book.id).concat({
+        ...book,
+        shelf: target
+      })
+      this.setState({ books })
     })
-    this.setState({ books })
-    BooksAPI.update(book, target)
   }
 
   render() {
@@ -33,7 +34,7 @@ class BooksApp extends React.Component {
 
         <Route exact path="/" render={() => (
           <Dashboard books={books} updateBook={this.updateBook} />
-        )}/>
+        )} />
         
         <Route path="/search" render={() => (
           <SearchBooks books={books} updateBook={this.updateBook} />

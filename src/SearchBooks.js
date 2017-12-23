@@ -1,49 +1,63 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import { Debounce } from 'react-throttle'
 import PropTypes from 'prop-types'
-import escapeRegExp from 'escape-string-regexp'
-import sortBy from 'sort-by'
 import ListBooks from './ListBooks'
+import * as BooksAPI from './utils/BooksAPI'
 
 class SearchBooks extends Component {
     static propTypes = {
-        books: PropTypes.array.isRequired,
-        updateBook: PropTypes.func.isRequired
+        updateBook: PropTypes.func.isRequired,
+        books: PropTypes.array.isRequired
     }
 
     state = {
-        query: ''
+        booksFound: []
     }
 
     updateQuery = (query) => {
-        this.setState({ query })
+        if(query) {
+            Promise.resolve(BooksAPI.search(query, 10)).then(books => {
+                this.setState({ booksFound: books.error ? [] : books })
+            })
+        } else {
+            this.setState({ booksFound: [] })
+        }   
+    }
+
+    checkBookshelf = (listBooks, book) => {
+        let findBook = listBooks.find(b => b.id === book.id)
+        return findBook ? findBook.shelf : 'none'
     }
 
     render() {
         const { books, updateBook } = this.props
-        const { query } = this.state
+        const { booksFound } = this.state
 
         let showingBooks
 
-        if(query) {
-            const match = new RegExp(escapeRegExp(query), 'i')
-            showingBooks = books.filter(book => (book.title && match.test(book.title)) || (book.authors && match.test(book.authors.toString())))
+        if(booksFound.length > 0) {
+            showingBooks = booksFound.map(bf => ({ ...bf, shelf: this.checkBookshelf(books, bf) }))
         } else {
-            showingBooks = books
+            showingBooks = booksFound;
         }
-
-        showingBooks.sort(sortBy('title'))
 
         return (
             <div className="search-books">
                 <div className="search-books-bar">
                     <Link className="close-search" to='/'>Close</Link>
                     <div className="search-books-input-wrapper">
-                        <input type="text" placeholder="Search by title or author" value={query} onChange={(event) => this.updateQuery(event.target.value)} />
+                        <Debounce time="400" handler="onChange">
+                            <input 
+                                type="text" 
+                                placeholder="Search by title or author"
+                                onChange={(event) => this.updateQuery(event.target.value)} 
+                            />
+                        </Debounce>
                     </div>
                 </div>
                 <div className="search-books-results">
-                    <ListBooks books={showingBooks} updateBook={updateBook} />
+                    {showingBooks.length > 0 && (<ListBooks books={showingBooks} updateBook={updateBook} />)}
                 </div>
             </div>
         )
